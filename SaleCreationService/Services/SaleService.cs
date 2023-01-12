@@ -8,7 +8,7 @@ using Data.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace qwe.Services
+namespace SaleCreationService.Services
 {
     public class SaleService : ISaleService
     {

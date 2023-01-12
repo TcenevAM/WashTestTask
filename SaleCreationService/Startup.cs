@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using qwe.Services;
+using SaleCreationService.Services;
 
-namespace qwe
+namespace SaleCreationService
 {
     public class Startup
     {

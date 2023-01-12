@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Data.Dtos;
 using Data.Models;
 
-namespace qwe.Services
+namespace SaleCreationService.Services
 {
     public interface ISaleService
     {

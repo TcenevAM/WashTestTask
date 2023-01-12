@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Data.Dtos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using qwe.Services;
+using SaleCreationService.Services;
 
-namespace qwe.Controllers
+namespace SaleCreationService.Controllers
 {
     [ApiController]
     [Route("[controller]")]

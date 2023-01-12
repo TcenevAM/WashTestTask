@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "qwe": {
+    "SaleCreationService": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
