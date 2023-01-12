@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace WashTestTask.Dtos
+namespace Data.Dtos
 {
     public class SalesPointDTO
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace WashTestTask.Models
+namespace Data.Models
 {
     public class SalesPoint
     {

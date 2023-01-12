@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Data.Dtos;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using WashTestTask.Controllers;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
+using WashTestTask.Database;
 using WashTestTask.Services;
 using Xunit;
 
@@ -28,6 +29,7 @@ namespace WashUnitTests
                 .Options;
 
             _context = new Context(_options);
+            _context.Database.EnsureDeleted();
             _context.AddRange(
                 new Product { Id = 1, Title = "Product 1", Price = 10.99m },
                 new Product { Id = 2, Title = "Product 2", Price = 15.99m },

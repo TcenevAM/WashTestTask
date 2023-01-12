@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace WashTestTask.Models
+namespace WashTestTask.Database
 {
     public class Context : DbContext
     {

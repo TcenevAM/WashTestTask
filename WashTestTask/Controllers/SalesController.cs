@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Dtos;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
 using WashTestTask.Services.Interfaces;
 
 namespace WashTestTask.Controllers
@@ -59,7 +59,6 @@ namespace WashTestTask.Controllers
 
             try
             {
-                await _saleService.ReduceProductAmountInSalesPoint(sale);
                 await _saleService.AddAsync(sale);
 
                 return CreatedAtAction("", new { id = sale.Id }, saleDto);
@@ -67,7 +66,7 @@ namespace WashTestTask.Controllers
             catch (ArgumentException e)
             {
                 _logger.LogError(e, "Error while creating sale.");
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
         

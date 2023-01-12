@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WashTestTask", "WashTestTas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WashUnitTests", "WashUnitTests\WashUnitTests.csproj", "{6E06A036-A194-48E3-82FB-2275A9D722FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaleCreationService", "SaleCreationService\SaleCreationService.csproj", "{6AC1ECDB-D74B-4D9B-AF16-E721EED53AA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{51A787D2-B384-4642-972E-813CEFC30D28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{6E06A036-A194-48E3-82FB-2275A9D722FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E06A036-A194-48E3-82FB-2275A9D722FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E06A036-A194-48E3-82FB-2275A9D722FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC1ECDB-D74B-4D9B-AF16-E721EED53AA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC1ECDB-D74B-4D9B-AF16-E721EED53AA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC1ECDB-D74B-4D9B-AF16-E721EED53AA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC1ECDB-D74B-4D9B-AF16-E721EED53AA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51A787D2-B384-4642-972E-813CEFC30D28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51A787D2-B384-4642-972E-813CEFC30D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51A787D2-B384-4642-972E-813CEFC30D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51A787D2-B384-4642-972E-813CEFC30D28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

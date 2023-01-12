@@ -1,4 +1,4 @@
-namespace WashTestTask.Models
+namespace Data.Models
 {
     public class Product
     {

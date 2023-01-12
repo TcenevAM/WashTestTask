@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WashTestTask.Models
+namespace Data.Models
 {
     public class Sale
     {

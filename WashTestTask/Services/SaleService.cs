@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
+using Data.Dtos;
+using Data.Models;
+using WashTestTask.Database;
 using WashTestTask.Services.Interfaces;
 
 namespace WashTestTask.Services
@@ -86,14 +87,6 @@ namespace WashTestTask.Services
             if (salesPoint == null)
             {
                 throw new ArgumentException($"SalesPoint with id {sale.SalesPointId} does not exist");
-            }
-
-            var availableProductsIds = salesPoint.ProvidedProducts.Select(p => p.ProductId).ToList();
-            var requestedProductsIds = sale.SalesData.Select(sd => sd.ProductId).ToList();
-            if (availableProductsIds.Except(requestedProductsIds).Any())
-            {
-                throw new ArgumentException(
-                    $"SalesPoint with id {sale.SalesPointId} does not contain the products with ids {requestedProductsIds.Except(availableProductsIds)}");
             }
 
             var customer = await _context.Customers.FindAsync(sale.CustomerId);

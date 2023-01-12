@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Dtos;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
 using WashTestTask.Services.Interfaces;
 
 namespace WashTestTask.Controllers

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Dtos;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
+using WashTestTask.Database;
 using WashTestTask.Services;
 using Xunit;
 
@@ -22,6 +23,7 @@ namespace WashUnitTests
                 .Options;
 
             _context = new Context(_options);
+            _context.Database.EnsureDeleted();
             _context.AddRange(
                 new SalesPoint
                 {

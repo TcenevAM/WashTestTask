@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
+using Data.Dtos;
+using Data.Models;
+using WashTestTask.Database;
 using WashTestTask.Services.Interfaces;
 
 namespace WashTestTask.Services

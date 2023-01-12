@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Data.Dtos;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
-using WashTestTask.Controllers;
-using WashTestTask.Dtos;
-using WashTestTask.Models;
+using WashTestTask.Database;
 using WashTestTask.Services;
 using Xunit;
 
@@ -26,6 +22,7 @@ namespace WashUnitTests
                 .Options;
 
             _context = new Context(_options);
+            _context.Database.EnsureDeleted();
             _context.AddRange(
                 new SalesPoint
                 {
@@ -229,32 +226,7 @@ namespace WashUnitTests
                 var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddAsync(sale));
             }
         }
-        
-        [Fact]
-        public async void AddAsync_SalesPointDoesNotContainAllRequestedProducts_ThrowsArgumentException()
-        {
-            using (var context = new Context(_options))
-            {
-                // Arrange
-                var service = new SaleService(context);
-                var sale = new Sale
-                {
-                    Date = DateTimeOffset.Now,
-                    SalesPointId = 1,
-                    CustomerId = 1,
-                    SalesData = new List<SaleData>
-                    {
-                        new SaleData { ProductId = 10, ProductQuantity = 2 },
-                        new SaleData { ProductId = 2, ProductQuantity = 3 }
-                    }
-                };
-                
-                // Act
-                // Assert
-                var exception = await Assert.ThrowsAsync<ArgumentException>(() => service.AddAsync(sale));
-            }
-        }
-        
+
         [Fact]
         public async void AddAsync_InvalidCustomerId_ThrowsArgumentException()
         {
