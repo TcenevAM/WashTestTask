@@ -16,7 +16,7 @@ services:
       start_period: 20s
 
   api_service:
-      image: api_service
+      image: q2
       container_name: api_service
       restart: on-failure
       ports: 
@@ -25,10 +25,10 @@ services:
         - rabbitmq
 
   sale_creation_service:
-      image: sale_creation_service
+      image: q
       container_name: sale_creation_service
       restart: on-failure
       ports: 
-          - 8000:80
+          - 8001:80
       depends_on: 
         - rabbitmq

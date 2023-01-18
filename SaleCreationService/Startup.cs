@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SaleCreationService.Configurations;
+using SaleCreationService.Consumers;
 using SaleCreationService.Services;
 
 namespace SaleCreationService
@@ -41,6 +42,8 @@ namespace SaleCreationService
             
             services.AddMassTransit(cfg =>
             {
+                cfg.AddConsumer<CreateSaleConsumer>();
+                
                 cfg.UsingRabbitMq((context, config) =>
                 {
                     config.ConfigureEndpoints(context);

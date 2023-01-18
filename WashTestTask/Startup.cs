@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WashTestTask.Configurations;
+using WashTestTask.Consumers;
 using WashTestTask.Database;
 using WashTestTask.Services;
 using WashTestTask.Services.Interfaces;
@@ -48,6 +49,11 @@ namespace WashTestTask
 
             services.AddMassTransit(cfg =>
             {
+                cfg.AddConsumer<CreateSaleConsumer>();
+                cfg.AddConsumer<ReduceProductAmountInSalesPointConsumer>();
+                cfg.AddConsumer<GetSalesPointConsumer>();
+                cfg.AddConsumer<GetCustomerConsumer>();
+                
                 cfg.UsingRabbitMq((context, config) =>
                 {
                     config.ConfigureEndpoints(context);
