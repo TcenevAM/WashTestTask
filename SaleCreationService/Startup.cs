@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SaleCreationService.Configurations;
 using SaleCreationService.Services;
 
 namespace SaleCreationService
@@ -30,6 +32,26 @@ namespace SaleCreationService
             services.AddScoped<ISaleService, SaleService>();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "SaleCreationService", Version = "v1" }); });
+            
+            var routingSection = Configuration.GetSection("RoutingConfiguration");
+            var routingConfig = routingSection.Get<RoutingConfiguration>();
+
+            var rabbitMqSection = Configuration.GetSection("RabbitMqConfiguration");
+            var rabbitMqConfig = rabbitMqSection.Get<RabbitMqConfiguration>();
+            
+            services.AddMassTransit(cfg =>
+            {
+                cfg.UsingRabbitMq((context, config) =>
+                {
+                    config.ConfigureEndpoints(context);
+
+                    config.Host(rabbitMqConfig.Hostname, rabbitMqConfig.VirtualHost, h =>
+                    {
+                        h.Username(rabbitMqConfig.Username);
+                        h.Password(rabbitMqConfig.Password);
+                    });
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

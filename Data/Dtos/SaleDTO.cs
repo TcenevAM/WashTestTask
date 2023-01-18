@@ -15,8 +15,7 @@ namespace Data.Dtos
         public int SalesPointId { get; set; }
         
         public int? CustomerId { get; set; }
-        
-        
+
         [Required(ErrorMessage = "SalesData is required.")]
         [MinLength(1, ErrorMessage = "SalesData must contain at least 1 element")]
         public List<SaleDataDTO> SalesData { get; set; } = new List<SaleDataDTO>();

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WashTestTask.Services.Interfaces;
@@ -16,11 +18,14 @@ namespace WashTestTask.Controllers
     {
         private readonly ILogger<SalesController> _logger;
         private readonly ISaleService _saleService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public SalesController(ILogger<SalesController> logger, ISaleService saleService)
+        public SalesController(ILogger<SalesController> logger, ISaleService saleService,
+            IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _saleService = saleService;
+            _publishEndpoint = publishEndpoint;
         }
         
         // GET: api/Sales
@@ -62,6 +67,26 @@ namespace WashTestTask.Controllers
                 await _saleService.AddAsync(sale);
 
                 return CreatedAtAction("", new { id = sale.Id }, saleDto);
+            }
+            catch (ArgumentException e)
+            {
+                _logger.LogError(e, "Error while creating sale.");
+                return BadRequest(e.Message);
+            }
+        }
+        
+        [HttpPost("V2")]
+        public async Task<IActionResult> AddSaleAsyncV2([FromBody] SaleDTO saleDto)
+        {
+            _logger.LogInformation("Creating new sale.");
+
+            var sale = _saleService.ToEntity(saleDto);
+
+            try
+            {
+                await _publishEndpoint.Publish(saleDto, CancellationToken.None);
+
+                return Ok();
             }
             catch (ArgumentException e)
             {
