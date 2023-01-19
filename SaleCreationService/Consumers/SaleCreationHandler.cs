@@ -14,11 +14,14 @@ namespace SaleCreationService.Consumers
     {
         private readonly ILogger<SaleCreationHandler> _logger;
         private readonly IRequestClient<CreateSale> _saleClient;
+        private readonly IRequestClient<ReduceProductAmountInSalesPoint> _reduceClient;
 
-        public SaleCreationHandler(ILogger<SaleCreationHandler> logger, IRequestClient<CreateSale> saleClient)
+        public SaleCreationHandler(ILogger<SaleCreationHandler> logger, IRequestClient<CreateSale> saleClient, 
+            IRequestClient<ReduceProductAmountInSalesPoint> reduceClient)
         {
             _logger = logger;
             _saleClient = saleClient;
+            _reduceClient = reduceClient;
         }
 
         public async Task Consume(ConsumeContext<HandleSaleCreationRequest> context)
@@ -28,7 +31,7 @@ namespace SaleCreationService.Consumers
             var dto = context.Message.SaleDto;
 
             _logger.LogInformation($"Publishing event to reduce product amount in sales point with id {dto.SalesPointId}");
-            await context.Publish<ReduceProductAmountInSalesPoint>(new { SaleDto = dto });
+            await _reduceClient.GetResponse<ReduceProductAmountInSalesPoint>(new { SaleDto = dto });
             
             _logger.LogInformation($"Creating sale with {dto}");
             var response = await _saleClient.GetResponse<CreateSaleResponse>(new { SaleDto = dto });
