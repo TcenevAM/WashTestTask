@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Data.Contracts;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WashTestTask.Services.Interfaces;
@@ -16,11 +19,16 @@ namespace WashTestTask.Controllers
     {
         private readonly ILogger<SalesController> _logger;
         private readonly ISaleService _saleService;
+        private readonly IRequestClient<HandleSaleCreationRequest> _saleCreationClient;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public SalesController(ILogger<SalesController> logger, ISaleService saleService)
+        public SalesController(ILogger<SalesController> logger, ISaleService saleService,
+            IRequestClient<HandleSaleCreationRequest> saleCreationClient, IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _saleService = saleService;
+            _saleCreationClient = saleCreationClient;
+            _publishEndpoint = publishEndpoint;
         }
         
         // GET: api/Sales
@@ -55,13 +63,25 @@ namespace WashTestTask.Controllers
         {
             _logger.LogInformation("Creating new sale.");
 
-            var sale = _saleService.ToEntity(saleDto);
-
             try
             {
-                await _saleService.AddAsync(sale);
+                var invalidProperties = await _saleService.GetPropertiesWithInvalidData(saleDto);
+                if (invalidProperties.Any())
+                {
+                    return BadRequest($"Dto have properties with invalid data: {string.Join(',', invalidProperties)}");
+                }
+                
+                var response = await _saleCreationClient.GetResponse<CreateSaleResponse>(new { SaleDto = saleDto });
+                await _publishEndpoint.Publish<SaleCreated>(new
+                {
+                    Id = response.Message.Result.Id,
+                    CustomerId = response.Message.Result.CustomerId,
+                    SalesPointId = response.Message.Result.SalesPointId,
+                    Date = response.Message.Result.Date,
+                    TotalAmount = response.Message.Result.TotalAmount
+                });
 
-                return CreatedAtAction("", new { id = sale.Id }, saleDto);
+                return CreatedAtAction("", new { id = response.Message.Result.Id }, saleDto);
             }
             catch (ArgumentException e)
             {
@@ -83,6 +103,7 @@ namespace WashTestTask.Controllers
                 return NotFound();
             }
             await _saleService.PutAsync(sale, saleDto);
+            await _publishEndpoint.Publish<SaleUpdated>(new { Id = sale.Id });
     
             return Ok(sale);
         }

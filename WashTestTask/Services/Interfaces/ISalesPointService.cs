@@ -14,5 +14,6 @@ namespace WashTestTask.Services.Interfaces
         Task<SalesPoint> AddAsync(SalesPoint product);
         Task PutAsync(SalesPoint product, SalesPointDTO productDto);
         Task RemoveAsync(SalesPoint sale);
+        Task<SalesPoint> UpdateAsync(SalesPoint salesPoint);
     }
 }

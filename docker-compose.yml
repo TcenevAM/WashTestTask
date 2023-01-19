@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: masstransit/rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  api_service:
+      image: dal_api
+      container_name: dal_api
+      restart: on-failure
+      ports: 
+          - 8000:80
+      depends_on: 
+        - rabbitmq
+
+  sale_creation_service:
+      image: sale_creation_service
+      container_name: sale_creation_service
+      restart: on-failure
+      ports: 
+          - 8001:80
+      depends_on: 
+        - rabbitmq

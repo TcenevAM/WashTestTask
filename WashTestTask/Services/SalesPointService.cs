@@ -86,5 +86,12 @@ namespace WashTestTask.Services
             _context.SalesPoints.Remove(salesPoint);
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<SalesPoint> UpdateAsync(SalesPoint salesPoint)
+        {
+            _context.Entry(salesPoint).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return salesPoint;
+        }
     }
 }

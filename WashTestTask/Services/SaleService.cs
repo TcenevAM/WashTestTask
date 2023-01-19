@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Data.Dtos;
 using Data.Models;
@@ -66,19 +67,22 @@ namespace WashTestTask.Services
             };
         }
 
-        public async Task ReduceProductAmountInSalesPoint(Sale sale)
+        public async Task<List<string>> GetPropertiesWithInvalidData(SaleDTO saleDto)
         {
-            foreach (var saleData in sale.SalesData)
+            var result = new List<string>();
+            
+            var salesPoint = await _context.SalesPoints.FindAsync(saleDto.SalesPointId);
+            if (salesPoint == null)
             {
-                var salesPoint = sale.SalesPoint;
-                var providedProduct = salesPoint.ProvidedProducts.First(p => p.ProductId == saleData.ProductId);
-                if (providedProduct.Quantity < saleData.ProductQuantity)
-                    throw new ArgumentException(
-                        $"Sales point with id {sale.SalesPointId} does not contain enough product with id {providedProduct.ProductId}");
-                providedProduct.Quantity -= saleData.ProductQuantity;
+                result.Add("SalesPoint");
             }
 
-            await _context.SaveChangesAsync();
+            if (saleDto.CustomerId != null && await _context.Customers.FindAsync(saleDto.CustomerId) == null)
+            {
+                result.Add("CustomerId");
+            }
+
+            return result;
         }
 
         public async Task<Sale> AddAsync(Sale sale)

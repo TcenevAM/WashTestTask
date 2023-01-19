@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ namespace WashUnitTests
         private readonly DbContextOptions<Context> _options;
         private readonly Context _context;
         private readonly ILogger<CustomersController> _mockLogger = new Mock<ILogger<CustomersController>>().Object;
+        private readonly IPublishEndpoint _mockPublisher = new Mock<IPublishEndpoint>().Object;
 
         public CustomerControllerTests()
         {
@@ -43,7 +45,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var response = controller.GetCustomers();
@@ -62,7 +64,7 @@ namespace WashUnitTests
             const int nonExistentId = -1;
             var customerService = new Mock<ICustomerService>();
             customerService.Setup(x => x.GetAsync(It.IsAny<int>())).ReturnsAsync((Customer)null);
-            var controller = new CustomersController(_mockLogger, customerService.Object);
+            var controller = new CustomersController(_mockLogger, customerService.Object, _mockPublisher);
 
             // Act
             var response = await controller.GetCustomerAsync(nonExistentId);
@@ -77,7 +79,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var response = await controller.GetCustomerAsync(1);
@@ -97,7 +99,7 @@ namespace WashUnitTests
                 {
                     Name = "John"
                 };
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var result = await controller.CreateCustomerAsync(customer);
@@ -114,7 +116,7 @@ namespace WashUnitTests
             {
                 // Arrange
                 var customer = new CustomerDTO();
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
                 controller.ModelState.AddModelError("Name", "Required");
 
                 // Act
@@ -132,7 +134,7 @@ namespace WashUnitTests
             {
                 // Arrange
                 var customerDto = new CustomerDTO { Name = "New Name" };
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var response = await controller.PutCustomerAsync(1, customerDto);
@@ -152,7 +154,7 @@ namespace WashUnitTests
                 // Arrange
                 const int nonExistentId = -1;
                 var customerDto = new CustomerDTO { Name = "New Customer" };
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var response = await controller.PutCustomerAsync(nonExistentId, customerDto);
@@ -168,7 +170,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var result = await controller.DeleteCustomerAsync(1);
@@ -186,7 +188,7 @@ namespace WashUnitTests
             {
                 // Arrange
                 const int nonExistentId = -1;
-                var controller = new CustomersController(_mockLogger, new CustomerService(context));
+                var controller = new CustomersController(_mockLogger, new CustomerService(context), _mockPublisher);
 
                 // Act
                 var response = await controller.DeleteCustomerAsync(nonExistentId);
