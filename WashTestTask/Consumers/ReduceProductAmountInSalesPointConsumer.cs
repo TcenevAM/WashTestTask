@@ -22,7 +22,7 @@ namespace WashTestTask.Consumers
 
         public async Task Consume(ConsumeContext<ReduceProductAmountInSalesPoint> context)
         {
-            _logger.LogInformation($"Consuming reduce product amount in sales point with context message: {context.Message}");
+            _logger.LogInformation($"Reducing product amount in sales point");
             
             var salesPoint = await _salesPointService.GetAsync(context.Message.SaleDto.SalesPointId);
             foreach (var saleDataDto in context.Message.SaleDto.SalesData)

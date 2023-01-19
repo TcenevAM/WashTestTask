@@ -20,9 +20,9 @@ namespace WashTestTask.Consumers
 
         public async Task Consume(ConsumeContext<GetSalesPoint> context)
         {
-            _logger.LogInformation($"Consuming get sales point with context message: {context.Message}");
-            var salesPoint = await _salesPointService.GetAsync(context.Message.SalesPointId);
+            _logger.LogInformation($"Consuming get sales point with id: {context.Message.SalesPointId}");
             
+            var salesPoint = await _salesPointService.GetAsync(context.Message.SalesPointId);
             await context.RespondAsync<GetSalesPointResponse>(new 
             {
                 Id = salesPoint.Id,

@@ -33,7 +33,7 @@ namespace SaleCreationService.Consumers
             _logger.LogInformation($"Publishing event to reduce product amount in sales point with id {dto.SalesPointId}");
             await _reduceClient.GetResponse<ReduceProductAmountInSalesPoint>(new { SaleDto = dto });
             
-            _logger.LogInformation($"Creating sale with {dto}");
+            _logger.LogInformation($"Starting sale creation");
             var response = await _saleClient.GetResponse<CreateSaleResponse>(new { SaleDto = dto });
             await context.RespondAsync<CreateSaleResponse>(new { Result = response.Message.Result });
         }

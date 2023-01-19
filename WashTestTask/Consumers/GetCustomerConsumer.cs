@@ -21,10 +21,8 @@ namespace WashTestTask.Consumers
         public async Task Consume(ConsumeContext<GetCustomer> context)
         {
             _logger.LogInformation($"Consuming get customer request with customer id {context.Message.CustomerId}");
+            
             var customer = await _customerService.GetAsync(context.Message.CustomerId);
-            
-            
-            
             await context.RespondAsync<GetCustomerResponse>(new
             {
                 Id = customer.Id,
