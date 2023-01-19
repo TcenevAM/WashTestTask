@@ -134,48 +134,6 @@ namespace WashUnitTests
         }
 
         [Fact]
-        public async Task ReduceProductAmountInSalesPoint_ValidSaleData_ReduceProductAmount()
-        {
-            using (var context = new Context(_options))
-            {
-                // Arrange
-                var salesPoint = await _context.SalesPoints.FindAsync(1);
-                var sale = new Sale
-                {
-                    SalesPoint = salesPoint,
-                    SalesData = new List<SaleData> { new SaleData { ProductId = 1, ProductQuantity = 5 } }
-                };
-                var service = new SaleService(context);
-
-                // Act
-                await service.ReduceProductAmountInSalesPoint(sale);
-
-                // Assert
-                Assert.Equal(10, salesPoint.ProvidedProducts[0].Quantity);
-            }
-        }
-        
-        [Fact]
-        public async Task ReduceProductAmountInSalesPoint_NotEnoughProduct_ThrowsArgumentException()
-        {
-            using (var context = new Context(_options))
-            {
-                // Arrange
-                var salesPoint = await _context.SalesPoints.FindAsync(1);
-                var sale = new Sale
-                {
-                    SalesPoint = salesPoint,
-                    SalesData = new List<SaleData> { new SaleData { ProductId = 1, ProductQuantity = int.MaxValue } }
-                };
-                var service = new SaleService(context);
-
-                // Act
-                // Assert
-                await Assert.ThrowsAsync<ArgumentException>(() => service.ReduceProductAmountInSalesPoint(sale));
-            }
-        }
-
-        [Fact]
         public async void AddAsync_ValidSale_ReturnsSale()
         {
             using (var context = new Context(_options))

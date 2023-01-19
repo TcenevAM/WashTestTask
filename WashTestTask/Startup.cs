@@ -37,9 +37,6 @@ namespace WashTestTask
             });
             services.AddSwaggerGen();
             services.AddControllers();
-            
-            var routingSection = Configuration.GetSection("RoutingConfiguration");
-            var routingConfig = routingSection.Get<RoutingConfiguration>();
 
             var rabbitMqSection = Configuration.GetSection("RabbitMqConfiguration");
             var rabbitMqConfig = rabbitMqSection.Get<RabbitMqConfiguration>();

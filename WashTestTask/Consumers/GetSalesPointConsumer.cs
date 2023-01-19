@@ -2,21 +2,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Contracts;
 using MassTransit;
-using WashTestTask.Services;
+using Microsoft.Extensions.Logging;
+using WashTestTask.Services.Interfaces;
 
 namespace WashTestTask.Consumers
 {
     public class GetSalesPointConsumer : IConsumer<GetSalesPoint>
     {
-        private readonly SalesPointService _salesPointService;
+        private readonly ISalesPointService _salesPointService;
+        private readonly ILogger<GetSalesPointConsumer> _logger;
 
-        public GetSalesPointConsumer(SalesPointService salesPointService)
+        public GetSalesPointConsumer(ISalesPointService salesPointService, ILogger<GetSalesPointConsumer> logger)
         {
             _salesPointService = salesPointService;
+            _logger = logger;
         }
 
         public async Task Consume(ConsumeContext<GetSalesPoint> context)
         {
+            _logger.LogInformation($"Consuming get sales point with context message: {context.Message}");
             var salesPoint = await _salesPointService.GetAsync(context.Message.SalesPointId);
             
             await context.RespondAsync<GetSalesPointResponse>(new 

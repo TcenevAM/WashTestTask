@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Contracts;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WashTestTask.Services.Interfaces;
@@ -15,11 +17,14 @@ namespace WashTestTask.Controllers
     {
         private readonly ISalesPointService _salesPointService;
         private readonly ILogger<SalesPointsController> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public SalesPointsController(ISalesPointService salesPointService, ILogger<SalesPointsController> logger)
+        public SalesPointsController(ISalesPointService salesPointService, ILogger<SalesPointsController> logger, 
+            IPublishEndpoint publishEndpoint)
         {
             _salesPointService = salesPointService;
             _logger = logger;
+            _publishEndpoint = publishEndpoint;
         }
 
         // GET: api/SalesPoints
@@ -57,6 +62,11 @@ namespace WashTestTask.Controllers
             
             var salesPoint = _salesPointService.ToEntity(salesPointDto);
             await _salesPointService.AddAsync(salesPoint);
+            await _publishEndpoint.Publish<SalesPointCreated>(new
+            {
+                Id = salesPoint.Id,
+                Name = salesPoint.Name
+            });
             
             return CreatedAtAction("", new { id = salesPoint.Id }, salesPoint);
         }
@@ -74,6 +84,7 @@ namespace WashTestTask.Controllers
                 return NotFound();
             }
             await _salesPointService.PutAsync(salesPoint, salesPointDto);
+            await _publishEndpoint.Publish<SalesPointUpdated>(new { Id = salesPoint.Id });
     
             return Ok(salesPoint);
         }

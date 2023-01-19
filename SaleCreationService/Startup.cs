@@ -33,16 +33,13 @@ namespace SaleCreationService
             services.AddScoped<ISaleService, SaleService>();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "SaleCreationService", Version = "v1" }); });
-            
-            var routingSection = Configuration.GetSection("RoutingConfiguration");
-            var routingConfig = routingSection.Get<RoutingConfiguration>();
 
             var rabbitMqSection = Configuration.GetSection("RabbitMqConfiguration");
             var rabbitMqConfig = rabbitMqSection.Get<RabbitMqConfiguration>();
             
             services.AddMassTransit(cfg =>
             {
-                cfg.AddConsumer<CreateSaleConsumer>();
+                cfg.AddConsumer<SaleCreationHandler>();
                 
                 cfg.UsingRabbitMq((context, config) =>
                 {
@@ -63,17 +60,24 @@ namespace SaleCreationService
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SaleCreationService v1"));
             }
-
-            app.UseHttpsRedirection();
-
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(op =>
+            {
+                op.SwaggerEndpoint("/swagger/v1/swagger.json", "SaleCreationService v1");
+                op.RoutePrefix = string.Empty;
+            });
+            
             app.UseRouting();
 
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{id?}");
+                endpoints.MapControllers();
+            });
         }
     }
 }

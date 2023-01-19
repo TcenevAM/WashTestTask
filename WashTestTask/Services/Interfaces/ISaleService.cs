@@ -14,6 +14,6 @@ namespace WashTestTask.Services.Interfaces
         Task PutAsync(Sale product, SaleDTO productDto);
         Task RemoveAsync(Sale sale);
         Sale ToEntity(SaleDTO saleDto);
-        Task ReduceProductAmountInSalesPoint(Sale sale);
+        Task<List<string>> GetPropertiesWithInvalidData(SaleDTO saleDto);
     }
 }

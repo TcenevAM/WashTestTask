@@ -9,15 +9,14 @@ services:
       - 5672:5672
       - 15672:15672
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 10s
-      timeout: 5s
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 30s
+      timeout: 10s
       retries: 5
-      start_period: 20s
 
   api_service:
-      image: q2
-      container_name: api_service
+      image: dal_api
+      container_name: dal_api
       restart: on-failure
       ports: 
           - 8000:80
@@ -25,7 +24,7 @@ services:
         - rabbitmq
 
   sale_creation_service:
-      image: q
+      image: sale_creation_service
       container_name: sale_creation_service
       restart: on-failure
       ports: 

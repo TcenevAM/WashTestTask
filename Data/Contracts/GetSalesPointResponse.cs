@@ -4,7 +4,6 @@ namespace Data.Contracts
 {
     public interface GetSalesPointResponse
     {
-        
         public int Id { get; set; }
 
         public string Name { get; set; }

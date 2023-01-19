@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Contracts;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WashTestTask.Services.Interfaces;
@@ -15,10 +17,13 @@ namespace WashTestTask.Controllers
     {
         private readonly IProductService _productService;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger,
+            IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
+            _publishEndpoint = publishEndpoint;
             _productService = productService;
         }
 
@@ -61,6 +66,12 @@ namespace WashTestTask.Controllers
                 Price = productDto.Price
             };
             product = await _productService.AddAsync(product);
+            await _publishEndpoint.Publish<ProductCreated>(new
+            {
+                Id = product.Id, 
+                Title = product.Title, 
+                Price = product.Price
+            });
 
             return CreatedAtAction("", new { id = product.Id }, productDto);
         }
@@ -78,6 +89,7 @@ namespace WashTestTask.Controllers
                 return NotFound();
             }
             await _productService.PutAsync(product, productDto);
+            await _publishEndpoint.Publish<ProductUpdated>(new { Id = product.Id });
 
             return Ok(_productService.ToDto(product));
         }

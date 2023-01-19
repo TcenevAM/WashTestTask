@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Data.Dtos;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ namespace WashUnitTests
         private readonly DbContextOptions<Context> _options;
         private readonly Context _context;
         private readonly ILogger<ProductsController> _mockLogger = new Mock<ILogger<ProductsController>>().Object;
+        private readonly IPublishEndpoint _mockPublisher = new Mock<IPublishEndpoint>().Object;
 
         public ProductControllerTests()
         {
@@ -44,7 +46,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
     
                 // Act
                 var result = controller.GetProducts().Result as OkObjectResult;
@@ -64,7 +66,7 @@ namespace WashUnitTests
                 var productId = 4;
 
                 // Act
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
                 var result = await controller.GetProductByIdAsync(productId);
 
                 // Assert
@@ -81,7 +83,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
 
                 // Act
                 var response = await controller.GetProductByIdAsync(id);
@@ -100,7 +102,7 @@ namespace WashUnitTests
             using (var context = new Context(_options))
             {
                 // Arrange
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
 
                 // Act
                 var result = await controller.CreateProductAsync(new ProductDTO { Name = "Product2", Price = 20 });
@@ -124,7 +126,7 @@ namespace WashUnitTests
                 const int productId = 1;
 
                 // Act
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
                 var response = await controller.PutProduct(productId, productDto);
 
                 // Assert
@@ -145,7 +147,7 @@ namespace WashUnitTests
                 const int productId = -1;
 
                 // Act
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
                 var response = await controller.PutProduct(productId, productDto);
 
                 // Assert
@@ -162,7 +164,7 @@ namespace WashUnitTests
                 var productId = 1;
 
                 // Act
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
                 await controller.DeleteProduct(productId);
 
                 // Assert
@@ -179,7 +181,7 @@ namespace WashUnitTests
                 var productId = 4;
 
                 // Act
-                var controller = new ProductsController(new ProductService(context), _mockLogger);
+                var controller = new ProductsController(new ProductService(context), _mockLogger, _mockPublisher);
                 var response = await controller.DeleteProduct(productId);
 
                 // Assert
